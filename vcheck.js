@@ -2,6 +2,8 @@
 	
 	var root = this;
 	
+	var VERSION = '0001';
+	
 	var VCheck = root.VCheck = function(value, params){
 		
 		if(_){//Check if Underscore is available
@@ -40,6 +42,8 @@
 				
 	}
 	
+	root.VCheck.VERSION = VERSION;
+
 	var isset = function(value){
 		
 		if(value == undefined || value == null)

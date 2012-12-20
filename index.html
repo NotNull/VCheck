@@ -10,23 +10,59 @@
 		
 		<script type="text/javascript">
 			$(document).ready(function(){
-				VCheck(-100, {
-					typeSensitive: false,
-					string: function(value){
-						console.log(value);
-					},
-					number: function(value){
-						console.log(value);
-					},
-					'function': {
-						'false': function(value){
-							alert("I'm not a function!");
-						}
-					},
-					finite: function(value){
-						console.log(value);
-					}
-				});
+					var unknownType = "I am a string";
+					
+					VCheck(unknownType, {
+					  'function': function(value){
+					    console.log('I am a function!');
+					  },
+					  number: function(value){
+					    console.log('I am a number!');
+					  },
+					  string: function(value){
+					    console.log('I am a string!');
+					  }
+					});
+					
+					VCheck(unknownType, {
+					  'function': function(value){
+					    console.log('I am a function!');
+					  },
+					  number: {
+					    'true': function(value){
+					      console.log('I am a number!');
+					    },
+					    'false': function(value){
+					      console.log('I am not a number!');    
+					    }
+					  },
+					  string: function(value){
+					    console.log('I am a string!');
+					  }
+					});
+					
+					//change to number
+					unknownType = 9001;
+					
+					VCheck(unknownType, {
+					  typeSensitive: false,
+					  'function': function(value){
+					    console.log('I am a function!');
+					  },
+					  number: function(value){
+					    if(value > 9000)
+					      console.log("I'm over 9000!");
+					      
+					  }, 
+					  finite: function(value){
+					    if(value > 9000)
+					      console.log("I'm over 9000!");
+					      
+					  }, 
+					  string: function(value){
+					    console.log('I am a string!');
+					  }
+					});
 				
 			});
 			
