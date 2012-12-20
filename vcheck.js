@@ -57,6 +57,8 @@
 			if(eName.toString().toLowerCase() == 'mouseevent')
 				return true;
 		}
+		
+		return false;
 	}
 
 	var isset = function(value){
