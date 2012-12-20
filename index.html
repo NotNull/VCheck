@@ -63,6 +63,14 @@
 					    console.log('I am a string!');
 					  }
 					});
+					
+					$('#button').click(function(e){
+						VCheck(e, {
+							'mouseevent': function(v){
+								console.log(v);
+							}
+						})
+					});
 				
 			});
 			
@@ -72,6 +80,6 @@
         <title>New Web Project</title>
     </head>
     <body>
-        <h1>New Web Project Page</h1>
+    	<button id="button"> Click me</button>
     </body>
 </html>

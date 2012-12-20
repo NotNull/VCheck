@@ -43,6 +43,21 @@
 	}
 	
 	root.VCheck.VERSION = VERSION;
+	
+	var isMouseEvent = function(value){
+		
+		var e = value;
+		
+		var eName = e.__proto__.constructor.name;
+		
+		if(isset(e['originalEvent']))//if jQuery event
+			eName = e['originalEvent'].__proto__.constructor.name;
+		
+		if(isset(eName)){
+			if(eName.toString().toLowerCase() == 'mouseevent')
+				return true;
+		}
+	}
 
 	var isset = function(value){
 		
@@ -153,6 +168,10 @@
 			case 'undefined':
 				{
 					bool = _.isUndefined(value);					
+				}
+			case 'mouseevent':
+				{
+					bool = isMouseEvent(value);
 				}
 				break;
 			
