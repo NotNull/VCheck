@@ -9,6 +9,7 @@ Requirements: Underscore.js (Used for datatype checking)
 
 Example usage:
 
+`````javascript
 var unknownType = "I am a string";
 
 VCheck(unknownType, {
@@ -23,11 +24,13 @@ VCheck(unknownType, {
   }
 });
 
+`````
 
 The datatype that matches the passed variable launches the passed callback if the datatype equals true. 
 
 You can also pass extra parameters to launch a callback based on matching or not.
 
+`````javascript
 var unknownType = "I am a string";
 
 VCheck(unknownType, {
@@ -46,9 +49,11 @@ VCheck(unknownType, {
     console.log('I am a string!');
   }
 });
+`````
 
 By default, if a datatype returns true, it does not check against any other passed params that come after. But, you can set it to do so.
 
+`````javascript
 var unknownType = 9001;
 
 VCheck(unknownType, {
@@ -69,4 +74,4 @@ VCheck(unknownType, {
     console.log('I am a string!');
   }
 });
-
+`````
