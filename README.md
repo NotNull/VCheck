@@ -66,6 +66,7 @@ By default, if a datatype returns true, it does not check against any other pass
 var unknownType = 9001;
 
 VCheck(unknownType, {
+  typeSensitive: false,
   'function': function(value){
     console.log('I am a function!');
   },
