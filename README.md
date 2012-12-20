@@ -26,6 +26,10 @@ VCheck(unknownType, {
 
 `````
 
+`````javascript
+//Output: 'I am a string!'
+`````
+
 The datatype that matches the passed variable launches the passed callback if the datatype equals true. 
 
 You can also pass extra parameters to launch a callback based on matching or not.
@@ -51,6 +55,11 @@ VCheck(unknownType, {
 });
 `````
 
+`````javascript
+//Output: 'I am not a number!'
+//Output: 'I am a string!'
+`````
+
 By default, if a datatype returns true, it does not check against any other passed params that come after. But, you can set it to do so.
 
 `````javascript
@@ -74,4 +83,9 @@ VCheck(unknownType, {
     console.log('I am a string!');
   }
 });
+`````
+
+`````javascript
+//Output: "I'm over 9000!";
+//Output: "I'm over 9000!";
 `````
