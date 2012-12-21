@@ -64,12 +64,20 @@
 					  }
 					});
 					
-					$('#button').click(function(e){
-						VCheck(e, {
-							'mouseevent': function(v){
-								console.log(v);
+					v($('#div')[0], {
+						'mouseevent': {
+							preventDefault: true,
+							contextMenu: false,
+							'left': function(){
+								alert('You pressed the left mouse button!');
+							},
+							'middle': function(){
+								alert('You pressed the middle mouse button!');
+							},
+							'right': function(){
+								alert('You pressed the right mouse button!');
 							}
-						})
+						}
 					});
 				
 			});
@@ -80,6 +88,9 @@
         <title>New Web Project</title>
     </head>
     <body>
+    	<div style="width: 100%; height: 100%;" id="div">
     	<button id="button"> Click me</button>
+    		
+    	</div>
     </body>
 </html>

@@ -4,7 +4,7 @@
 	
 	var VERSION = '0001';
 	
-	var VCheck = root.VCheck = function(value, params){
+	var v = VCheck = root.VCheck = root.v = function(value, params){
 		
 		if(_){//Check if Underscore is available
 			
@@ -97,9 +97,43 @@
 		}
 	}
 	
+	var checkForEvent = function(element){
+		
+	}
+	
+	var bindEvent = function(element, type, handler) {
+		
+		if(_.isElement(element) == true && _.isString(type) == true && _.isFunction(handler) == true){	
+			if(isset($) == false){
+			    if (element.addEventListener) {
+			        element.addEventListener(type, handler, false);
+			    } else {
+			        element.attachEvent('on'+type, handler);
+			    }
+			}else{
+				$(element).bind(type, handler);
+			}
+		}
+	}
+	
+	var unbindEvent = function(element, type){
+		
+		if(isset($) == false){
+		    if (element.addEventListener) {
+		        element.removeEventListener(type, arguments.callee, false);
+		    } else {
+		        element.removeEvent('on'+type);
+		    }			
+		}else{
+			$(element).unbind(type);
+		}
+		    
+	}
+	
 	var checkKey = function(key, value, callback){
 		
 		var bool = false;
+		
 		
 		switch(key.toString().toLowerCase()){
 			case 'empty':
@@ -109,7 +143,7 @@
 				break;
 			case 'element':
 				{
-					bool = _.isElement(value);					
+					bool = _.isElement(value);
 				}
 				break;
 			case 'array':
@@ -176,10 +210,89 @@
 					bool = isMouseEvent(value);
 				}
 				break;
+		}
+		
+		if(_.isElement(value)){
 			
+			
+			switch (key.toString().toLowerCase()){
+				case 'mouseevent':
+				{
+					var events = callback;//assumes object has event callbacks
+					
+					var contextMenu;
+					
+					if(isset(events['right']) || isset(events['3'])){
+						value.oncontextmenu = function(e){
+							if(events['contextMenu'] == false)
+								e.preventDefault();
+							
+							var vEvent;
+							
+							if((isset(events['right'])))
+								vEvent = events['right'];	
+							else if(isset(events['3']))
+								vEvent = events['3'];
+							
+							if(_.isFunction(vEvent)){
+								launchValue(value, true, vEvent);
+							}	
+						}
+					}else if(events['contextMenu'] == false){
+						value.oncontextmenu = function(e){
+							if(events['contextMenu'] == false)
+								e.preventDefault();
+						}
+					}
+					
+					bindEvent(value, 'click', function(e){
+						if(events['preventDefault'] == true)
+							e.preventDefault();
+						
+						if(_.isFunction(events)){
+							launchValue(e, true, events);//Pass the Event instead of the element
+						}
+						else{
+							if(e.which == 1){
+								var vEvent;
+								
+								if((isset(events['left'])))
+									vEvent = events['left'];	
+								else if(isset(events['1']))
+									vEvent = events['1'];
+								
+								if(_.isFunction(vEvent))
+									launchValue(value, true, vEvent);
+									
+							}
+							else if(e.which == 2){
+								var vEvent;
+								
+								if((isset(events['middle'])))
+									vEvent = events['middle'];	
+								else if(isset(events['2']))
+									vEvent = events['2'];
+								
+								if(_.isFunction(vEvent))
+									launchValue(value, true, vEvent);
+							}
+						}
+					});
+					
+				}
+				break;
+				case 'keyevent':
+				{
+					
+				}
+				break;
+				
+			}
+		}
+		else{
+			launchValue(value, bool, callback);			
 		}
 				
-		launchValue(value, bool, callback);
 		
 		return bool;
 	}
