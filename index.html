@@ -10,6 +10,7 @@
 		
 		<script type="text/javascript">
 			$(document).ready(function(){
+
 					var unknownType = "I am a string";
 					
 					VCheck(unknownType, {
@@ -65,17 +66,14 @@
 					});
 					
 					v($('#div')[0], {
+						'keyup': {
+							'D': function(e){
+								console.log(e.type);
+							}
+						},
 						'mouseevent': {
-							preventDefault: true,
-							contextMenu: false,
-							'left': function(){
-								alert('You pressed the left mouse button!');
-							},
-							'middle': function(){
-								alert('You pressed the middle mouse button!');
-							},
-							'right': function(){
-								alert('You pressed the right mouse button!');
+							'left': function(e){
+								console.log(e.type);
 							}
 						}
 					});
@@ -88,9 +86,9 @@
         <title>New Web Project</title>
     </head>
     <body>
-    	<div style="width: 100%; height: 100%;" id="div">
+    	<div style="width: 500px; height: 500px;" id="div">
     	<button id="button"> Click me</button>
-    		
+    		<textarea> </textarea>
     	</div>
     </body>
 </html>

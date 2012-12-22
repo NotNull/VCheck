@@ -91,7 +91,7 @@ VCheck(unknownType, {
 //Output: "I'm over 9000!";
 `````
 
-You can also bind Mouse Events to a element. With the options to preventDefault and/or prevent contextMenu. 
+You can also bind Events to a element.
 `````javascript
 
 VCheck($('#div')[0], {
@@ -106,6 +106,11 @@ VCheck($('#div')[0], {
 		},
 		'right': function(){
 			alert('You pressed the right mouse button!');
+		}
+	},
+	'keyup': {
+		'f': function(e){
+			alert('You hit the F key!');
 		}
 	}
 });
