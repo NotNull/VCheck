@@ -4,6 +4,10 @@
 	
 	var VERSION = '0001';
 	
+	//Create local variables of libraries
+	var _ = root._;
+	var $ = root.jQuery || root.$;
+	
 	var v = VCheck = root.VCheck = root.v = function(value, params){
 		
 		if(_){//Check if Underscore is available
