@@ -7,6 +7,18 @@ VCheck is a very light-weight helper function that does only one thing, but does
 
 Requirements: Underscore.js (Used for datatype checking)
 
+**** Future Changes ****
+
+- Introducing chaining calls:
+`````javascript
+v(unknownVariable).isString(function(){}).isObject(function(){});
+`````
+
+- Introducing more helper functions. 
+- Taking away dependency on Underscore, but will wrap around Underscore if present.
+
+********************
+
 Example usage:
 
 `````javascript
