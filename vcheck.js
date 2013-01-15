@@ -8,43 +8,73 @@
 	var _ = root._;
 	var $ = root.jQuery || root.$;
 	
-	var v = VCheck = root.VCheck = root.v = function(value, params){
+	var __value; //current passed value
+	var instance; 
+	
+	var v = VCheck = root.v = root.VCheck = function(value, params){
+	
+		__value = value;
 		
-		if(_){//Check if Underscore is available
+		this.__value = __value;
+		
+		instance = this;
+		
+		if(isArray(params, false) || isObject(params, false)){
+			params = convertKeysToLowerCase(params);
+							
+			var isTypeSensitive = params['typeSensitive'];
 			
-			if(_.isArray(params) || _.isObject(params)){
-				params = convertKeysToLowerCase(params);
-								
-				var isTypeSensitive = params['typeSensitive'];
-				
-				if(isset(isTypeSensitive)){
-										
-					if(_.isNumber(isTypeSensitive)){//if Bit
-						
-						if(isTypeSensitive == 0)
-							isTypeSensitive = false;
-						else
-							isTypeSensitive = true;
-					}
-				}
-				
-				for(var key in params){
-					if(key.toString().toLowerCase() != 'typesensitive'){
-						var vEvent = params[key];
-						
-						var isTrue = checkKey(key, value, vEvent);
-						
-						if(isTypeSensitive == true && isTrue == true)
-							break;
-					}
+			if(isset(isTypeSensitive)){
+									
+				if(isNumber(isTypeSensitive, false)){//if Bit
 					
+					if(isTypeSensitive == 0)
+						isTypeSensitive = false;
+					else
+						isTypeSensitive = true;
+				}
+			}
+			
+			for(var key in params){
+				if(key.toString().toLowerCase() != 'typesensitive'){
+					var vEvent = params[key];
+					
+					var isTrue = checkKey(key, value, vEvent);
+					
+					if(isTypeSensitive == true && isTrue == true)
+						break;
 				}
 				
 			}
-				
+			
 		}
-		else
-			console.warn('Underscore not found');
+		
+		return {
+			isObject: isObject,
+			isFunction: isFunction,
+			isArray: isArray,
+			isEmpty: isEmpty,
+			isNumber: isNumber,
+			isFinite: isFinite,
+			isElement: isElement,
+			isArguments: isArguments,
+			isString: isString,
+			isBoolean: isBoolean,
+			isDate: isDate,
+			isRegExp: isRegExp,
+			isNaN: isNaN,
+			isNull: isNull,
+			isUndefined: isUndefined,
+			isMouseEvent: isMouseEvent,
+			isKeyEvent: isKeyEvent,
+			checkType: checkType,
+			isTypeOf: isTypeOf,
+			isset: isset,
+			getVersion: getVersion,
+			getValue: getValue,
+			getKeyChars: getKeyChars		
+		}
+			
 				
 	}
 	
@@ -170,9 +200,242 @@
 		return newObj;
 	}
 	
-	var isMouseEvent = function(value){
+	var getVersion(){
+		return isntance.VERSION;
+	}
+	
+	var getValue(){
+		return instance.__value;
+	}
+	
+	var getKeyChars(){
+		return KeyChars;
+	}
+	
+	/** Functions to check types
+	** Defaults to Underscore.js if present
+	**/
+	
+	//Simple datatype function checker. Returns in string format
+	function checkType(v){
+		if(v === null) 
+			return 'null';
 		
-		var e = value;
+		if(typeof v === 'undefined')
+			return 'undefined';
+		
+		return Object.prototype.toString.call(v).match(/\s(.+?)\]/)[1].toLowerCase();	
+	}
+	
+	var isTypeOf(v, t){
+	
+		if(isString(t, false)){
+			if(!isset(v))
+				v = __value;
+
+			if(!isset(_))
+				return t.toLowerCase() == checkType(v);
+			else
+				return _isTypeOf(v, t);
+		}
+	}
+	
+	var _isTypeOf = function(v, t){
+				
+		var bool = false;
+		
+		t = t.toLowerCase();
+		
+		switch(t){
+			case 'empty':
+				{
+					bool = _.isEmpty(v);
+				}
+				break;
+			case 'element':
+				{
+					bool = _.isElement(v);
+				}
+				break;
+			case 'array':
+				{
+					bool = _.isArray(v);					
+				}
+				break;
+			case 'object':
+				{
+					bool = _.isObject(v);					
+				}
+				break;
+			case 'arguments':
+				{
+					bool = _.isArguments(v);					
+				}
+				break;
+			case 'function':
+				{
+					bool = _.isFunction(v);					
+				}
+				break;
+			case 'number':
+				{
+					bool = _.isNumber(v);
+				}
+				break;
+			case 'string':
+				{
+					bool = _.isString(v);					
+				}
+				break;
+			case 'finite':
+				{
+					bool = _.isFinite(v);					
+				}
+				break;
+			case 'boolean':
+				{
+					bool = _.isBoolean(v);					
+				}
+				break;
+			case 'date':
+				{
+					bool = _.isDate(v);					
+				}
+				break;
+			case 'nan':
+				{
+					bool = _.isNaN(v);					
+				}
+				break;
+			case 'null':
+				{
+					bool = _.isNull(v);					
+				}
+				break;
+			case 'undefined':
+				{
+					bool = _.isUndefined(v);					
+				}
+			case 'mouseevent':
+				{
+					bool = isMouseEvent(v);
+				}
+				break;
+			case 'keyevent':
+				{
+					bool = isKeyEvent(v);
+				}
+				break;
+		}
+			
+		return bool;
+	}
+	
+	function isEmpty(v){	
+		if(!isset(_)){
+			if(checkType(v) == 'string'){
+				if(v.trim() == '')
+					return true;
+				else
+					return false;
+			}
+			
+			if(checkType(v) == 'array'){
+				if(v.count == 0)
+					return true;
+				else
+					return false;
+			}
+			
+			if(checkType(v) == 'object'){
+				if(v.__count__ == 0)
+					return true;
+				else
+					return false;
+			}
+		}
+		else{
+			return _.isEmpty(v);
+		}		
+	}
+	
+	var isType = function(is, v, c){
+				
+		if(isset(c)){
+			if(c === false){
+				return is;
+			}
+			else{
+				launchValue(v, is, c);
+			}
+		}
+		
+		if(!isset(v))
+			return is;
+			
+		return instance;//For chaining
+	}
+	
+	var isFunction = function(v, c){
+		return isType(isTypeOf(v, 'function'), v, c);
+	}
+		
+	var isElement = function(v, c){
+		return isType(isTypeOf(v, 'element'), v, c);
+	}
+	
+	var isArray = function(v, c){
+		return isType(isTypeOf(v, 'array'), v, c);
+	}
+	
+	var isObject = function(v, c){
+		return isType(isTypeOf(v, 'object'), v, c);
+	}
+	
+	var isArguments = function(v, c){
+		return isType(isTypeOf(v, 'arguments'), v, c);
+	}
+	
+	var isString = function(v, c){
+		return isType(isTypeOf(v, 'string'), v, c);
+	}
+	
+	var isNumber = function(v, c){
+		return isType(isTypeOf(v, 'number'), v, c);
+	}
+	
+	var isFinite = function(v, c){
+		return isType(isTypeOf(v, 'finite'), v, c);
+	}
+	
+	var isBoolean = function(v, c){
+		return isType(isTypeOf(v, 'boolean'), v, c);
+	}
+	
+	var isDate = function(v, c){
+		return isType(isTypeOf(v, 'date'), v, c);
+	}
+	
+	var isRegExp = function(v, c){
+		return isType(isTypeOf(v, 'regexp'), v, c);
+	}
+	
+	var isNaN = function(v, c){
+		return isType(isTypeOf(v, 'nan'), v, c);
+	}
+	
+	var isNull = function(v, c){
+		return isType(isTypeOf(v, 'null'), v, c);
+	}
+	
+	var isUndefined = function(v, c){
+		return isType(isTypeOf(v, 'undefined'), v, c);
+	}
+
+	var isMouseEvent = function(v, c){
+		
+		var e = v;
+		var is = false;
 		
 		var eName = e.__proto__.constructor.name;
 		
@@ -181,10 +444,32 @@
 		
 		if(isset(eName)){
 			if(eName.toString().toLowerCase() == 'mouseevent')
-				return true;
+				is = true;
 		}
 		
-		return false;
+		return isType(is, v, c);
+	}
+	
+	var isKeyEvent = function(value){
+		
+		var e = value;
+		
+		var is = false;
+		
+		var eName = e.__proto__.constructor.name;
+		
+		if(isset(e['originalEvent']))//if jQuery event
+			eName = e['originalEvent'].__proto__.constructor.name;
+		
+		if(isset(eName)){
+			var type = eName.toString().toLowerCase();
+			if(type == 'keyup' || type == 'keydown')
+				is = true;
+		}
+		
+		is = false;
+	
+		return isType(is, v, c);	
 	}
 
 	var isset = function(value){
@@ -192,7 +477,7 @@
 		if(value == undefined || value == null)
 			return false;
 		
-		if(_.isString(value)){
+		if(isString(value, false)){
 			if(value.trim() == '')
 				return false;
 		}
@@ -203,33 +488,29 @@
 	var launchValue = function(value, bool, vEvent){
 		
 		if(isset(value) && isset(vEvent)){
-			if(_.isObject(vEvent) && _.isFunction(vEvent) == false){
+			if(isObject(vEvent, false) && isFunction(vEvent, false) == false){
 				if(isset(vEvent['false']) && bool == false){
 					var fun = vEvent['false'];
 					
-					if(_.isFunction(fun))
+					if(isFunction(fun, false))
 						fun(value);
 				}
 				else if(isset(vEvent['true']) && bool == true){
 					var fun = vEvent['true'];
 					
-					if(_.isFunction(fun))
+					if(isFunction(fun, valse))
 						fun(value);
 				}
 			}
-			else if(_.isFunction(vEvent) && bool == true){
+			else if(isFunction(vEvent, false) && bool == true){
 				vEvent(value);
 			}
 		}
 	}
 	
-	var checkForEvent = function(element){
-		
-	}
-	
 	var bindEvent = function(element, type, handler) {
 		
-		if(_.isElement(element) == true && _.isString(type) == true && _.isFunction(handler) == true){	
+		if(isElement(element, false) == true && isString(type, false) == true && isFunction(handler, false) == true){	
 			if(isset($) == false){
 			    if (element.addEventListener) {
 			        element.addEventListener(type, handler, false);
@@ -254,92 +535,17 @@
 			$(element).unbind(type);
 		}
 		    
-	}
+	}	
 	
 	var checkKey = function(key, value, callback){
 		
-		var bool = false;
+		key = key.toString().toLowerCase();
 		
-		switch(key.toString().toLowerCase()){
-			case 'empty':
-				{
-					bool = _.isEmpty(value);
-				}
-				break;
-			case 'element':
-				{
-					bool = _.isElement(value);
-				}
-				break;
-			case 'array':
-				{
-					bool = _.isArray(value);					
-				}
-				break;
-			case 'object':
-				{
-					bool = _.isObject(value);					
-				}
-				break;
-			case 'arguments':
-				{
-					bool = _.isArguments(value);					
-				}
-				break;
-			case 'function':
-				{
-					bool = _.isFunction(value);					
-				}
-				break;
-			case 'number':
-				{
-					bool = _.isNumber(value);
-				}
-				break;
-			case 'string':
-				{
-					bool = _.isString(value);					
-				}
-				break;
-			case 'finite':
-				{
-					bool = _.isFinite(value);					
-				}
-				break;
-			case 'boolean':
-				{
-					bool = _.isBoolean(value);					
-				}
-				break;
-			case 'date':
-				{
-					bool = _.isDate(value);					
-				}
-				break;
-			case 'nan':
-				{
-					bool = _.isNaN(value);					
-				}
-				break;
-			case 'null':
-				{
-					bool = _.isNull(value);					
-				}
-				break;
-			case 'undefined':
-				{
-					bool = _.isUndefined(value);					
-				}
-			case 'mouseevent':
-				{
-					bool = isMouseEvent(value);
-				}
-				break;
-		}
+		var bool = isTypeOf(value, key);
 		
-		if(_.isElement(value)){
+		if(isElement(value, false)){
 			
-			switch (key.toString().toLowerCase()){
+			switch (key){
 				case 'mouseevent':
 				{
 					var events = callback;//assumes object has event callbacks
@@ -358,7 +564,7 @@
 							else if(isset(events['3']))
 								vEvent = events['3'];
 							
-							if(_.isFunction(vEvent)){
+							if(isFunction(vEvent, false)){
 								launchValue(value, true, vEvent);
 							}	
 						}
@@ -373,7 +579,7 @@
 						if(events['preventDefault'] == true)
 							e.preventDefault();
 						
-						if(_.isFunction(events)){
+						if(isFunction(events)){
 							launchValue(e, true, events);//Pass the Event instead of the element
 						}
 						else{
@@ -385,7 +591,7 @@
 								else if(isset(events['1']))
 									vEvent = events['1'];
 								
-								if(_.isFunction(vEvent))
+								if(isFunction(vEvent, false))
 									launchValue(e, true, vEvent);
 									
 							}
@@ -397,7 +603,7 @@
 								else if(isset(events['2']))
 									vEvent = events['2'];
 								
-								if(_.isFunction(vEvent))
+								if(isFunction(vEvent, false))
 									launchValue(e, true, vEvent);
 							}
 						}
@@ -410,7 +616,7 @@
 					var kEvents = callback;
 					
 					bindEvent(value, 'keydown', function(e){
-						if(_.isFunction(kEvents)){
+						if(isFunction(kEvents, false)){
 							launchValue(e, true, kEvents);
 						}
 						else{
@@ -433,7 +639,7 @@
 					var kEvents = callback;
 					
 					bindEvent(value, 'keyup', function(e){
-						if(_.isFunction(kEvents)){
+						if(isFunction(kEvents, false)){
 							launchValue(e, true, kEvents);
 						}
 						else{
