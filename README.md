@@ -7,6 +7,8 @@ VCheck is a very light-weight helper function that does only one thing, but does
 
 Requirements: Underscore.js (Used for datatype checking)
 
+PHP Version: https://github.com/NotNull/VCheck-PHP
+
 **** Future Changes ****
 
 - Introducing chaining calls:
